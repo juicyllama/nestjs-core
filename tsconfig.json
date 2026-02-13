@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "forceConsistentCasingInFileNames": false,
+        "incremental": true,
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "noFallthroughCasesInSwitch": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "isolatedModules": true,
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "strictNullChecks": true,
+        "strictBindCallApply": false,
+        "types": ["jest"]
+  }
+}
