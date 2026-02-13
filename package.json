@@ -25,7 +25,7 @@
     ],
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json",
+        "build": "tsc",
         "start:dev": "tsc -w",
         "format": "prettier --write \"src/**/*.ts\"",
         "lint": "eslint \"src/**/*.ts\" --fix",
