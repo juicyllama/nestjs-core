@@ -10,6 +10,8 @@
         "noFallthroughCasesInSwitch": false,
         "noImplicitAny": false,
         "removeComments": true,
+        "declaration": true,
+        "declarationMap": true,
         "skipLibCheck": true,
         "sourceMap": true,
         "isolatedModules": true,
