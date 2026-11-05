@@ -1,0 +1,30 @@
+#
+# Release the package when main changes.
+# Runs the PR checks, then the shared release workflow with a version bump.
+# npm trusted publishing must name this file, release-package.yml.
+#
+
+name: 'Release Package'
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+jobs:
+    pr_checks:
+        uses: ./.github/workflows/pr.yml
+        secrets: inherit
+
+    release:
+        name: 'Release Package'
+        needs:
+            - pr_checks
+        permissions:
+            contents: write
+            id-token: write
+        uses: ./.github/workflows/release.yml
+        with:
+            bump: true
+        secrets: inherit

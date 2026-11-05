@@ -1,44 +1,17 @@
 # Publish the version already committed on main. Does not bump package.json.
-# npm trusted publishing must name this repository and publish-current.yml.
+# npm trusted publishing must name this file, publish-current.yml.
 name: Publish current version
 
 on:
-  workflow_dispatch:
+    workflow_dispatch:
 
 jobs:
-  publish:
-    name: Publish current version
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Install Node.js
-        uses: actions/setup-node@v7
+    publish:
+        name: 'Publish current version'
+        permissions:
+            contents: read
+            id-token: write
+        uses: ./.github/workflows/release.yml
         with:
-          node-version: 24
-          registry-url: 'https://registry.npmjs.org/'
-
-      - name: Ensure npm supports trusted publishing
-        run: npm install --global npm@latest
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-      - name: Verify trusted publishing environment
-        run: |
-          npm --version
-          if [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
-            echo "::error::GitHub OIDC token is not available. Check the job has id-token: write."
-            exit 1
-          fi
-          echo "npm publish will authenticate via trusted publishing (OIDC)."
-
-      - name: Publish to npm (trusted publishing)
-        run: npm publish --access public
+            bump: false
+        secrets: inherit
