@@ -1,30 +1,16 @@
-#
-# Release the package when main changes.
-# Runs the PR checks, then the shared release workflow with a version bump.
-# npm trusted publishing must name this file, release-package.yml.
-#
-
-name: 'Release Package'
+# Retired. npm publish runs from release.yml.
+# This workflow does not publish and does not run on push.
+name: Retired release package
 
 on:
-    push:
-        branches:
-            - main
     workflow_dispatch:
 
 jobs:
-    pr_checks:
-        uses: ./.github/workflows/pr.yml
-        secrets: inherit
-
-    release:
-        name: 'Release Package'
-        needs:
-            - pr_checks
-        permissions:
-            contents: write
-            id-token: write
-        uses: ./.github/workflows/release.yml
-        with:
-            bump: true
-        secrets: inherit
+    retired:
+        name: 'Use release.yml'
+        runs-on: ubuntu-latest
+        steps:
+            -   name: 'Stop'
+                run: |
+                    echo "::error::Publish from the Release Package workflow (release.yml)."
+                    exit 1
