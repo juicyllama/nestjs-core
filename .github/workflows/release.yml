@@ -1,23 +1,39 @@
 #
-# Shared npm publish. Callers decide whether to bump package.json first.
-# npm trusted publishing checks the caller filename, not this file.
-# Register publish-current.yml and release-package.yml on the package.
+# GitHub Actions workflow.
+#
+# Releases the package to npm when a push into main is detected.
+# * Run the PR checks
+# * Bump the version number
+# * Build
+# * Publish to npm via GitHub trusted publishing (OIDC)
+#
+# npm trusted publishing checks this filename. The publisher must name release.yml.
+# A manual run publishes the committed version. Select bump to change package.json first.
 #
 
-name: 'Release'
+name: 'Release Package'
 
 on:
-    workflow_call:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
         inputs:
             bump:
                 description: 'Bump package.json from commit messages before publishing'
-                required: true
                 type: boolean
+                default: false
 
 jobs:
+    pr_checks:
+        uses: ./.github/workflows/pr.yml
+        secrets: inherit
+
     release:
-        name: 'Publish to npm'
+        name: 'Release Package'
         runs-on: ubuntu-latest
+        needs:
+            - pr_checks
         permissions:
             contents: write
             id-token: write
@@ -35,20 +51,21 @@ jobs:
                     package-manager-cache: false
 
             -   name: 'Ensure npm supports trusted publishing'
+                # Trusted publishing (OIDC) requires npm >= 11.5.1.
                 run: npm install --global npm@latest
 
             -   name: 'Install dependencies'
                 run: npm install
 
             -   name: 'Prepare version bump'
-                if: inputs.bump
+                if: github.event_name == 'push' || inputs.bump == true
                 run: |
                     git stash
                     git pull --force
                     git config core.hooksPath /dev/null
 
             -   name: 'Version Bump'
-                if: inputs.bump
+                if: github.event_name == 'push' || inputs.bump == true
                 uses: phips28/gh-action-bump-version@master
                 env:
                     GITHUB_TOKEN: ${{ secrets.GH_CI_CD_RELEASE }}
@@ -66,10 +83,13 @@ jobs:
                 run: |
                     npm --version
                     if [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
-                      echo "::error::GitHub OIDC token is not available. The caller and this workflow both need id-token: write."
+                      echo "::error::GitHub OIDC token is not available. This job needs id-token: write."
                       exit 1
                     fi
                     echo "npm publish will authenticate via trusted publishing (OIDC)."
 
             -   name: 'Publish to npm (trusted publishing)'
+                # No auth token in .npmrc. npm exchanges the GitHub OIDC token
+                # with the registry. The trusted publisher on the package must
+                # name this repository and the release.yml workflow.
                 run: npm publish --access public

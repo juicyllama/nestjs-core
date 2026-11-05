@@ -1,17 +1,16 @@
-# Publish the version already committed on main. Does not bump package.json.
-# npm trusted publishing must name this file, publish-current.yml.
-name: Publish current version
+# Retired. npm publish runs from release.yml.
+# This workflow does not publish and does not run on push.
+name: Retired publish current
 
 on:
     workflow_dispatch:
 
 jobs:
-    publish:
-        name: 'Publish current version'
-        permissions:
-            contents: read
-            id-token: write
-        uses: ./.github/workflows/release.yml
-        with:
-            bump: false
-        secrets: inherit
+    retired:
+        name: 'Use release.yml'
+        runs-on: ubuntu-latest
+        steps:
+            -   name: 'Stop'
+                run: |
+                    echo "::error::Publish from the Release Package workflow (release.yml)."
+                    exit 1
