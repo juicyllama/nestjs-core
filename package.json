@@ -33,7 +33,7 @@
         "go": "npm run lint && npm run format && npm run test && npm run build"
     },
     "dependencies": {
-        "@juicyllama/typeorm": "^1.0.1",
+        "@juicyllama/typeorm": "^1.0.1 || ^2.0.0",
         "@nestjs/common": "^11.1.13",
         "@nestjs/platform-socket.io": "^11.1.13",
         "@nestjs/websockets": "^11.1.13",
