@@ -1,6 +1,6 @@
 {
     "name": "@juicyllama/nestjs-core",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "Core Modules for NestJS applications by JuicyLlama Studio",
     "author": {
         "name": "JuicyLlama Studio",
